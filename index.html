@@ -25,6 +25,11 @@
 								material="color: gray; metalness: 1"
 								position="1 0 -2">
 			</a-entity>
+			<a-entity id="cube3" 
+								geometry="primitive: box; depth: 0.5; width: 1; height: 1" 
+								material="color: gray; metalness: 1"
+								position="-1 2 -2">
+			</a-entity>
 			<a-entity id="line12"
 								geometry="primitive: cylinder; radius: 0.1; height: 2"
 								material="color: white; metalness: 0"
@@ -32,7 +37,21 @@
 								position="0 0 -2"
 								visible="false">
 			</a-entity>
-			<a-light position="-1 1 6"></a-light>
+			<a-entity id="line23"
+								geometry="primitive: cylinder; radius: 0.1; height: 2"
+								material="color: white; metalness: 0"
+								rotation="0 0 45"
+								position="0 1 -2"
+								visible="false">
+			</a-entity>
+			<a-entity id="line13"
+								geometry="primitive: cylinder; radius: 0.1; height: 2"
+								material="color: white; metalness: 0"
+								rotation="0 0 0"
+								position="-1 1 -2"
+								visible="false">
+			</a-entity>
+			<a-light position="-3 2 7"></a-light>
 		</a-scene>
   </body>
 	<script>
@@ -52,11 +71,15 @@
 					el.setAttribute('material', 'color', color2) :
 					el.setAttribute('material', 'color', color1);	
 				toggleLine('cube1', 'cube2', 'line12', color2);
+				toggleLine('cube2', 'cube3', 'line23', color2);
+				toggleLine('cube1', 'cube3', 'line13', color2);
 			}
 		}
 		var cube1 = document.getElementById('cube1');
 		cube1.onmouseenter = toggleElColor(cube1, 'gray', 'red');
 		var cube2 = document.getElementById('cube2');
 		cube2.onmouseenter = toggleElColor(cube2, 'gray', 'red');
+		var cube3 = document.getElementById('cube3');
+		cube3.onmouseenter = toggleElColor(cube3, 'gray', 'red');
 	</script>
 </html>
