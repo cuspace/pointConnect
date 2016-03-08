@@ -31,7 +31,7 @@ var toggleElColor = function(pId, lId, el, colorBase, colorOn, lineMap) {
 		}
 	}
 };
-var point = {
+var pointTemplate = {
 	id: 'point',
 	geometry: {
 		primitive: 'box',
@@ -49,7 +49,7 @@ var point = {
 		z: -2
 	}
 };
-var line = {
+var lineTemplate = {
 	id: 'line',
 	geometry: {
 		primitive: 'cylinder',
@@ -78,12 +78,12 @@ var scene = document.getElementById('scene1');
 //points
 for(var i = 0; i < pointPositions.length; i++) {
 	var ett = document.createElement('a-entity');
-	ett.setAttribute('id', point.id + i);
-	ett.setAttribute('geometry', point.geometry);
-	ett.setAttribute('material', point.material);
+	ett.setAttribute('id', pointTemplate.id + i);
+	ett.setAttribute('geometry', pointTemplate.geometry);
+	ett.setAttribute('material', pointTemplate.material);
 	ett.setAttribute('position', pointPositions[i]);
 	scene.appendChild(ett);
-	ett.onmouseenter = toggleElColor(point.id, line.id, ett, point.material.color, pointOnColor, lineMap);
+	ett.onmouseenter = toggleElColor(pointTemplate.id, lineTemplate.id, ett, pointTemplate.material.color, pointOnColor, lineMap);
 }
 
 //lines
@@ -111,12 +111,12 @@ for(var i = 0; i < lineMap.length; i++) {
 	var height = vec3.len(v1);
 
 	var ett = document.createElement('a-entity');
-	ett.setAttribute('id', line.id + lineMap[i]);
-	ett.setAttribute('geometry', line.geometry);
+	ett.setAttribute('id', lineTemplate.id + lineMap[i]);
+	ett.setAttribute('geometry', lineTemplate.geometry);
 	ett.setAttribute('geometry', 'height', height);
-	ett.setAttribute('material', line.material);
+	ett.setAttribute('material', lineTemplate.material);
 	ett.setAttribute('rotation', rot);
 	ett.setAttribute('position', pos);
-	ett.setAttribute('visible', line.visible);
+	ett.setAttribute('visible', lineTemplate.visible);
 	scene.appendChild(ett);
 }
