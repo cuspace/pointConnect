@@ -5,7 +5,7 @@
     <script src="https://aframe.io/releases/latest/aframe.min.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene id="scene1">
       <a-camera
 								position="0 1.8 4" 
 								cursor-visible="true" 
@@ -15,45 +15,10 @@
 								cursor-maxdistance="100" 
 								cursor-opacity="0.5">
 			</a-camera>
-			<a-entity id="cube1" 
-								geometry="primitive: box; depth: 0.5; width: 1; height: 1" 
-								material="color: gray; metalness: 1"
-								position="-1 0 -2">
-			</a-entity>
-			<a-entity id="cube2" 
-								geometry="primitive: box; depth: 0.5; width: 1; height: 1" 
-								material="color: gray; metalness: 1"
-								position="1 0 -2">
-			</a-entity>
-			<a-entity id="cube3" 
-								geometry="primitive: box; depth: 0.5; width: 1; height: 1" 
-								material="color: gray; metalness: 1"
-								position="-1 2 -2">
-			</a-entity>
-			<a-entity id="line12"
-								geometry="primitive: cylinder; radius: 0.1; height: 2"
-								material="color: white; metalness: 0"
-								rotation="0 0 90"
-								position="0 0 -2"
-								visible="false">
-			</a-entity>
-			<a-entity id="line23"
-								geometry="primitive: cylinder; radius: 0.1; height: 2"
-								material="color: white; metalness: 0"
-								rotation="0 0 45"
-								position="0 1 -2"
-								visible="false">
-			</a-entity>
-			<a-entity id="line13"
-								geometry="primitive: cylinder; radius: 0.1; height: 2"
-								material="color: white; metalness: 0"
-								rotation="0 0 0"
-								position="-1 1 -2"
-								visible="false">
-			</a-entity>
 			<a-light position="-3 2 7"></a-light>
 		</a-scene>
   </body>
+	<script src="./gl-matrix-min.js"></script>
 	<script>
 		var toggleLine = function(id1, id2, lineId, colorOn) {
 			var el1 = document.getElementById(id1);
@@ -64,22 +29,117 @@
 			(el1On && el2On) ?
 				lineEl.setAttribute('visible', 'true') :
 			  lineEl.setAttribute('visible', 'false');
-		}
-		var toggleElColor = function(el, color1, color2) {
+		};
+		var toggleElColor = function(el, color1, color2, lineMap) {
 			return function() {
 				(el.getAttribute('material').color === color1) ?
 					el.setAttribute('material', 'color', color2) :
 					el.setAttribute('material', 'color', color1);	
-				toggleLine('cube1', 'cube2', 'line12', color2);
-				toggleLine('cube2', 'cube3', 'line23', color2);
-				toggleLine('cube1', 'cube3', 'line13', color2);
+				
+				for(var i = 0; i < lineMap.length; i++) {
+					toggleLine('cube'+lineMap[i][0], 'cube'+lineMap[i][1], 'line'+lineMap[i], color2);
+				}
+
 			}
+		};
+		var cube = {
+			id: 'cube',
+			geometry: {
+				primitive: 'box',
+				depth: 0.5,
+				width: 1,
+				height: 1
+			},
+			material: {
+				color: 'gray',
+				metalness: 1
+			},
+			position: {
+				x: -1,
+				y: 0,
+				z: -2
+			}
+		};
+		var createPoint = function(num, pos, objT, scn) {
+			var ett = document.createElement('a-entity');
+			ett.setAttribute('id', objT.id + num);
+			ett.setAttribute('geometry', objT.geometry);
+			ett.setAttribute('material', objT.material);
+			ett.setAttribute('position', pos);
+			scn.appendChild(ett);
+			//ett.onmouseenter = mouseEnterHandler(ett, objT.material.color, 'red');
+			return ett;
+		};
+		var line = {
+			id: 'line',
+			geometry: {
+				primitive: 'cylinder',
+				radius: 0.1,
+				height: 2
+			},
+			material: {
+				color: 'white',
+				metalness: 0
+			},
+			rotation: {
+				x: 0,
+				y: 0,
+				z: 90
+			},
+			position: {
+				x: 0,
+				y: 0,
+				z: -2
+			},
+			visible: 'false'
+		};
+		var createLine = function(num, rot, pos, objT, scn) {
+			var ett = document.createElement('a-entity');
+			ett.setAttribute('id', objT.id + num);
+			ett.setAttribute('geometry', objT.geometry);
+			ett.setAttribute('material', objT.material);
+			ett.setAttribute('rotation', rot);
+			ett.setAttribute('position', pos);
+			ett.setAttribute('visible', objT.visible);
+			scn.appendChild(ett);
+			return ett;
+		};
+		
+		var pointPositions = [{x:-2,y:-1,z:-2}, {x:1,y:0,z:-2}, {x:-1,y:2,z:-2}];
+		var linePositions = [];//[{x:0,y:0,z:-2}, {x:0,y:1,z:-2}, {x:-1,y:1,z:-2}];
+		var lineRotations = [];//[{x:0,y:0,z:90}, {x:0,y:0,z:45}, {x:0,y:0,z:0}];
+		var lineMap = ['10', '12', '20'];
+		
+		var calcMidPos = function(pos1, pos2) {
+			return {x: (pos1.x+pos2.x)/2, y: (pos1.y+pos2.y)/2, z: (pos1.z+pos2.z)/2};
+		};
+		var createLinePositions = function(m, pp, lp) {
+			for(var i = 0; i < m.length; i++) {
+				var i1 = parseInt(m[i][0]);
+				var i2 = parseInt(m[i][1]);
+				lp.push(calcMidPos(pp[i1], pp[i2]));
+			}
+		};
+		createLinePositions(lineMap, pointPositions, linePositions);
+		var createLineRotations = function(m, pp, lr) {
+			for(var i = 0; i < m.length; i++) {
+				var i1 = parseInt(m[i][0]);
+				var i2 = parseInt(m[i][1]);
+				var v1 = vec3.fromValues(pp[i2].x - pp[i1].x, pp[i2].y - pp[i1].y, pp[i2].z - pp[i1].z);
+				var ref = vec3.fromValues(0, 1, 0);
+				var angle = vec3.angle(v1, ref)*180/Math.PI;
+				lr.push({x:0,y:0,z:angle});
+			}			
 		}
-		var cube1 = document.getElementById('cube1');
-		cube1.onmouseenter = toggleElColor(cube1, 'gray', 'red');
-		var cube2 = document.getElementById('cube2');
-		cube2.onmouseenter = toggleElColor(cube2, 'gray', 'red');
-		var cube3 = document.getElementById('cube3');
-		cube3.onmouseenter = toggleElColor(cube3, 'gray', 'red');
+		createLineRotations(lineMap, pointPositions, lineRotations);
+		
+		var scene = document.getElementById('scene1');
+		for(var i = 0; i < pointPositions.length; i++) {
+			var p = createPoint(i, pointPositions[i], cube, scene);
+			p.onmouseenter = toggleElColor(p, cube.material.color, 'red', lineMap);
+		}
+		for(var i = 0; i < lineMap.length; i++) {
+			createLine(lineMap[i], lineRotations[i], linePositions[i], line, scene);			
+		}
 	</script>
 </html>
