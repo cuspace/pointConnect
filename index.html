@@ -37,13 +37,12 @@
 					el.setAttribute('material', 'color', color1);	
 				
 				for(var i = 0; i < lineMap.length; i++) {
-					toggleLine('cube'+lineMap[i][0], 'cube'+lineMap[i][1], 'line'+lineMap[i], color2);
+					toggleLine('point'+lineMap[i][0], 'point'+lineMap[i][1], 'line'+lineMap[i], color2);
 				}
-
 			}
 		};
-		var cube = {
-			id: 'cube',
+		var point = {
+			id: 'point',
 			geometry: {
 				primitive: 'box',
 				depth: 0.5,
@@ -59,16 +58,6 @@
 				y: 0,
 				z: -2
 			}
-		};
-		var createPoint = function(num, pos, objT, scn) {
-			var ett = document.createElement('a-entity');
-			ett.setAttribute('id', objT.id + num);
-			ett.setAttribute('geometry', objT.geometry);
-			ett.setAttribute('material', objT.material);
-			ett.setAttribute('position', pos);
-			scn.appendChild(ett);
-			//ett.onmouseenter = mouseEnterHandler(ett, objT.material.color, 'red');
-			return ett;
 		};
 		var line = {
 			id: 'line',
@@ -93,53 +82,56 @@
 			},
 			visible: 'false'
 		};
-		var createLine = function(num, rot, pos, objT, scn) {
-			var ett = document.createElement('a-entity');
-			ett.setAttribute('id', objT.id + num);
-			ett.setAttribute('geometry', objT.geometry);
-			ett.setAttribute('material', objT.material);
-			ett.setAttribute('rotation', rot);
-			ett.setAttribute('position', pos);
-			ett.setAttribute('visible', objT.visible);
-			scn.appendChild(ett);
-			return ett;
-		};
 		
 		var pointPositions = [{x:-2,y:-1,z:-2}, {x:1,y:0,z:-2}, {x:-1,y:2,z:-2}];
-		var linePositions = [];//[{x:0,y:0,z:-2}, {x:0,y:1,z:-2}, {x:-1,y:1,z:-2}];
-		var lineRotations = [];//[{x:0,y:0,z:90}, {x:0,y:0,z:45}, {x:0,y:0,z:0}];
 		var lineMap = ['10', '12', '20'];
 		
+		var scene = document.getElementById('scene1');
+		
+		//points
+		for(var i = 0; i < pointPositions.length; i++) {
+			var ett = document.createElement('a-entity');
+			ett.setAttribute('id', point.id + i);
+			ett.setAttribute('geometry', point.geometry);
+			ett.setAttribute('material', point.material);
+			ett.setAttribute('position', pointPositions[i]);
+			scene.appendChild(ett);
+			ett.onmouseenter = toggleElColor(ett, point.material.color, 'red', lineMap);
+		}
+		
+		//lines
 		var calcMidPos = function(pos1, pos2) {
 			return {x: (pos1.x+pos2.x)/2, y: (pos1.y+pos2.y)/2, z: (pos1.z+pos2.z)/2};
 		};
-		var createLinePositions = function(m, pp, lp) {
-			for(var i = 0; i < m.length; i++) {
-				var i1 = parseInt(m[i][0]);
-				var i2 = parseInt(m[i][1]);
-				lp.push(calcMidPos(pp[i1], pp[i2]));
-			}
-		};
-		createLinePositions(lineMap, pointPositions, linePositions);
-		var createLineRotations = function(m, pp, lr) {
-			for(var i = 0; i < m.length; i++) {
-				var i1 = parseInt(m[i][0]);
-				var i2 = parseInt(m[i][1]);
-				var v1 = vec3.fromValues(pp[i2].x - pp[i1].x, pp[i2].y - pp[i1].y, pp[i2].z - pp[i1].z);
-				var ref = vec3.fromValues(0, 1, 0);
-				var angle = vec3.angle(v1, ref)*180/Math.PI;
-				lr.push({x:0,y:0,z:angle});
-			}			
-		}
-		createLineRotations(lineMap, pointPositions, lineRotations);
-		
-		var scene = document.getElementById('scene1');
-		for(var i = 0; i < pointPositions.length; i++) {
-			var p = createPoint(i, pointPositions[i], cube, scene);
-			p.onmouseenter = toggleElColor(p, cube.material.color, 'red', lineMap);
-		}
 		for(var i = 0; i < lineMap.length; i++) {
-			createLine(lineMap[i], lineRotations[i], linePositions[i], line, scene);			
+			var i1 = parseInt(lineMap[i][0]);
+			var i2 = parseInt(lineMap[i][1]);
+			
+			// line center position
+			var pos = calcMidPos(pointPositions[i1], pointPositions[i2]);
+			
+			// line rotation
+			var v1 = vec3.fromValues(
+				pointPositions[i2].x - pointPositions[i1].x,
+				pointPositions[i2].y - pointPositions[i1].y,
+				pointPositions[i2].z - pointPositions[i1].z
+			);
+			var ref = vec3.fromValues(0, 1, 0);
+			var angle = vec3.angle(v1, ref)*180/Math.PI;
+			var rot = {x:0,y:0,z:angle};
+			
+			// line height
+			var height = vec3.len(v1);
+			
+			var ett = document.createElement('a-entity');
+			ett.setAttribute('id', line.id + lineMap[i]);
+			ett.setAttribute('geometry', line.geometry);
+			ett.setAttribute('geometry', 'height', height);
+			ett.setAttribute('material', line.material);
+			ett.setAttribute('rotation', rot);
+			ett.setAttribute('position', pos);
+			ett.setAttribute('visible', line.visible);
+			scene.appendChild(ett);
 		}
 	</script>
 </html>
