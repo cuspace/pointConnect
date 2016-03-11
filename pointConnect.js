@@ -14,35 +14,6 @@
 	var pointOnColor = 'crimson';
 	var lineColor = 'skyblue';
 
-	var toggleLine = function(id1, id2, lineId, colorOn) {
-		var el1 = document.getElementById(id1);
-		var el2 = document.getElementById(id2);
-		var lineEl = document.getElementById(lineId);
-		var el1On = el1.getAttribute('material').color === colorOn;
-		var el2On = el2.getAttribute('material').color === colorOn;
-		if (el1On && el2On) {
-			lineEl.setAttribute('visible', 'true');		
-		}
-		else {
-			lineEl.setAttribute('visible', 'false');
-		}
-	};
-	var toggleElColor = function(pId, lId, el, colorBase, colorOn, lineMap) {
-		return function() {
-			if (el.getAttribute('material').color === colorBase) {
-				el.setAttribute('material', 'color', colorOn);
-			}
-			else {
-				el.setAttribute('material', 'color', colorBase);	
-			}
-
-			for(var i = 0; i < lineMap.length; i++) {
-				toggleLine(pId+lineMap[i][0], pId+lineMap[i][1], lId+lineMap[i], colorOn);
-			}
-		};
-	};
-
-
 	var pointTemplate = {
 		id: 'point',
 		geometry: {
@@ -85,9 +56,37 @@
 		visible: 'false'
 	};
 
+	var toggleLine = function(id1, id2, lineId, colorOn) {
+		var el1 = document.getElementById(id1);
+		var el2 = document.getElementById(id2);
+		var lineEl = document.getElementById(lineId);
+		var el1On = el1.getAttribute('material').color === colorOn;
+		var el2On = el2.getAttribute('material').color === colorOn;
+		if (el1On && el2On) {
+			lineEl.setAttribute('visible', 'true');		
+		}
+		else {
+			lineEl.setAttribute('visible', 'false');
+		}
+	};
+	var toggleElColor = function(pId, lId, el, colorBase, colorOn, lineMap) {
+		return function() {
+			if (el.getAttribute('material').color === colorBase) {
+				el.setAttribute('material', 'color', colorOn);
+			}
+			else {
+				el.setAttribute('material', 'color', colorBase);	
+			}
+
+			for(var i = 0; i < lineMap.length; i++) {
+				toggleLine(pId+lineMap[i][0], pId+lineMap[i][1], lId+lineMap[i], colorOn);
+			}
+		};
+	};
+
 	var scene = document.getElementById('scene1');
 
-	var createPoints = function (scene, pointTemplate) {
+	var createPoints = function (scene, pointTemplate, pointPositions, lineMap) {
 		//points
 		for(var i = 0; i < pointPositions.length; i++) {
 			var ett = document.createElement('a-entity');
@@ -100,11 +99,11 @@
 		}
 	};
 
-	var createLines = function (scene, lineTemplate) {
+	var calcMidPos = function(pos1, pos2) {
+		return {x: (pos1.x+pos2.x)/2, y: (pos1.y+pos2.y)/2, z: (pos1.z+pos2.z)/2};
+	};
+	var createLines = function (scene, lineTemplate, pointPositions, lineMap) {
 		//lines
-		var calcMidPos = function(pos1, pos2) {
-			return {x: (pos1.x+pos2.x)/2, y: (pos1.y+pos2.y)/2, z: (pos1.z+pos2.z)/2};
-		};
 		for(var i = 0; i < lineMap.length; i++) {
 			var i1 = parseInt(lineMap[i][0]);
 			var i2 = parseInt(lineMap[i][1]);
@@ -137,7 +136,7 @@
 		}	
 	};
 	
-	createPoints(scene, pointTemplate);
-	createLines(scene, lineTemplate);
+	createPoints(scene, pointTemplate, pointPositions, lineMap);
+	createLines(scene, lineTemplate, pointPositions, lineMap);
 	
 })();
