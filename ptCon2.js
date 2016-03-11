@@ -34,8 +34,28 @@
 	})();
 	
 	var Line = (function() {
+		var _sceneEl;
+		var _template = {
+			id: 'line',
+			geometry: {
+				primitive: 'cylinder',
+				radius: 0.05,
+				height: 2
+			},
+			material: {
+				color: 'white',
+				metalness: 0.5
+			},
+			visible: 'true'
+		};
 		var create = function (sceneId, positionsArr) {
-			console.log(sceneId);
+			_sceneEl = document.getElementById(sceneId);
+			var aEntity = document.createElement('a-entity');
+			aEntity.setAttribute('id', _template.id);
+			aEntity.setAttribute('geometry', _template.geometry);
+			aEntity.setAttribute('material', _template.material);
+			aEntity.setAttribute('visible', _template.visible);
+			_sceneEl.appendChild(aEntity);
 		};
 		return {
 			create: create
