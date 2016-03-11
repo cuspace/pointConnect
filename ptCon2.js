@@ -3,14 +3,16 @@
 	"use strict";
 	
 	var Point = (function() {
+		var _sceneEl;
 		var create = function (sceneId, pos2dArr) {
-			console.log('create');
+			_sceneEl = document.getElementById(sceneId);
+			console.log(_sceneEl);
 		};
 		return {
 			create: create
 		};
 	})();
 	
-	Point.create();
+	Point.create('scene1');
 
 })();
