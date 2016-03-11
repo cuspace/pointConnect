@@ -48,7 +48,17 @@
 			},
 			visible: 'true'
 		};
+		var _pairTbl = [];
+		var _makePairTbl = function(n) {
+			for(var i = 0; i < n; i++) {
+				_pairTbl.push([]);
+				for(var j = 0; j < n; j++) {
+					_pairTbl[i].push(0);
+				}
+			}
+		};
 		var create = function (sceneId, positionsArr) {
+			_makePairTbl(positionsArr.length);
 			_sceneEl = document.getElementById(sceneId);
 			var aEntity = document.createElement('a-entity');
 			aEntity.setAttribute('id', _template.id);
