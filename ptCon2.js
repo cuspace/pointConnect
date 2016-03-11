@@ -17,9 +17,9 @@
 				metalness: 0.5
 			}
 		};
-		var create = function (sceneId, pos2dArr) {
+		var create = function (sceneId, positionsArr) {
 			_sceneEl = document.getElementById(sceneId);
-			pos2dArr.forEach(function (item, index, array) {
+			positionsArr.forEach(function (item, index, array) {
 				var aEntity = document.createElement('a-entity');
 				aEntity.setAttribute('id', _template.id + index);
 				aEntity.setAttribute('geometry', _template.geometry);
@@ -33,11 +33,22 @@
 		};
 	})();
 	
-	Point.create('scene1', [
+	var Line = (function() {
+		var create = function (sceneId, positionsArr) {
+			console.log(sceneId);
+		};
+		return {
+			create: create
+		};
+	})();
+	
+	var sceneId = 'scene1';
+	var positions = [
 		{x: -0.5, y: +1.0, z: -5.0},
 		{x: +0.5, y: +1.0, z: -5.0},
 		{x: -2.0, y: -1.0, z: -5.0},
 		{x: +2.0, y: -1.0, z: -5.0}
-	]);
-
+	];
+	Point.create(sceneId, positions);
+  Line.create(sceneId, positions);
 })();
