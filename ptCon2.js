@@ -26,7 +26,7 @@
 				aEntity.setAttribute('geometry', _template.geometry);
 				aEntity.setAttribute('material', _template.material);
 				aEntity.setAttribute('position', item);
-				aEntity.onmouseenter = mouseEnterHandler();
+				aEntity.onmouseenter = mouseEnterHandler;
 				_sceneEl.appendChild(aEntity);
 			});
 		};
@@ -48,16 +48,7 @@
 				color: 'white',
 				metalness: 0.5
 			},
-			visible: 'true'
-		};
-		var _pairTbl = [];
-		var _makePairTbl = function(n) {
-			for(var i = 0; i < n; i++) {
-				_pairTbl.push([]);
-				for(var j = 0; j < n; j++) {
-					_pairTbl[i].push(0);
-				}
-			}
+			visible: 'false'
 		};
 		var _getMidPos = function (p1, p2) {
 			return {x: (p1.x+p2.x)*0.5, y: (p1.y+p2.y)*0.5, z: (p2.z+p2.z)*0.5};
@@ -73,12 +64,10 @@
 			return {x:0,y:0,z:angle};
 		};
 		var create = function (sceneId, positionsArr) {
-			_makePairTbl(positionsArr.length);
-			
 			_sceneEl = document.getElementById(sceneId);
 			
-			for(var i = 0; i < _pairTbl.length; i++) {
-				for(var j = i+1; j < _pairTbl[i].length; j++) {
+			for(var i = 0; i < positionsArr.length; i++) {
+				for(var j = i+1; j < positionsArr.length; j++) {
 					
 					var pos = _getMidPos(positionsArr[i], positionsArr[j]);
 					var h = _getHeight(positionsArr[i], positionsArr[j]);
@@ -86,7 +75,7 @@
 					//console.log('p1.x:'+positionsArr[i].x+', p2.x:'+positionsArr[j].x+' , rot:'+rot.z);
 					
 					var aEntity = document.createElement('a-entity');
-					aEntity.setAttribute('id', _template.id);
+					aEntity.setAttribute('id', _template.id+i+j);
 					aEntity.setAttribute('geometry', _template.geometry);
 					aEntity.setAttribute('geometry', 'height', h);
 					aEntity.setAttribute('material', _template.material);
@@ -102,11 +91,6 @@
 		};
 	})();
 	
-	var mouseEnterHandler = function() {
-		return function() {
-			console.log('a');
-		};
-	};
 	
 	var sceneId = 'scene1';
 	var positions = [
@@ -115,6 +99,58 @@
 		{x: -2.0, y: -1.0, z: -5.0},
 		{x: +2.0, y: -1.0, z: -5.0}
 	];
-	Point.create(sceneId, positions, mouseEnterHandler);
+	var pairTbl = [];
+	var twoPoints = [];
+	var makePairTbl = function(n) {
+		for(var i = 0; i < n; i++) {
+			pairTbl.push([]);
+			for(var j = 0; j < n; j++) {
+				pairTbl[i].push(0);
+			}
+		}
+	};
+	makePairTbl(positions.length);
+	
+	var mouseEnterHandler = function(tbl, tp) {
+		return function() {
+			if(tp.length === 0) {
+				tp.push(this.id);
+//				console.log(tp);
+				this.setAttribute('material', 'color', 'red');
+				return;
+			}
+			var i = parseInt(tp[0].substr(5));
+			var j = parseInt(this.id.substr(5));
+			if(i === j) {
+				tp.pop();
+//				console.log(tp);
+				this.setAttribute('material', 'color', 'gray');
+				return;
+			}
+//			console.log('('+i+','+j+')');
+			if(i > j) {
+				//swap
+				var tmp = i;
+				i = j;
+				j = tmp;
+			}
+			var lineEl = document.getElementById('line'+i+j);
+			if(tbl[i][j] === 0) {
+				//make line visible
+				lineEl.setAttribute('visible', 'true');
+				tbl[i][j] = 1;
+			}
+			else {
+				//make line invisible
+				lineEl.setAttribute('visible', 'false');
+				tbl[i][j] = 0;
+			}
+			tp.pop();
+//			console.log(tp);
+			document.getElementById('point'+i).setAttribute('material', 'color', 'gray');
+			document.getElementById('point'+j).setAttribute('material', 'color', 'gray');
+		};
+	};
+	Point.create(sceneId, positions, mouseEnterHandler(pairTbl, twoPoints));
   Line.create(sceneId, positions);
 })();
