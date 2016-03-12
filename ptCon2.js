@@ -112,8 +112,13 @@
 	var actionCases = [];
 	var case1 = {
 		tbl: [[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 0]],
-		action: function() {
-			console.log('case1');
+		do: function() {
+			console.log('do');
+			document.getElementById('sphere1').setAttribute('material', 'color', 'red');
+		},
+		undo: function() {
+			console.log('undo');
+			document.getElementById('sphere1').setAttribute('material', 'color', 'gray');
 		}
 	};
 	actionCases.push(case1);
@@ -171,12 +176,16 @@
 					}
 				}
 				if(sameCase) {
-					item.action();
+					item.do();
+				}
+				else {
+					item.undo();
 				}
 				sameCase = true;
 			});
 		};
 	};
+	
 	Point.create(sceneId, positions, mouseEnterHandler(pairTbl, twoPoints, actionCases));
   Line.create(sceneId, positions);
 })();
