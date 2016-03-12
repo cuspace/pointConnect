@@ -112,7 +112,7 @@
 	var actionCases = [];
 	var case1 = {
 		tbl: [[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 0]],
-		handler: function() {
+		action: function() {
 			console.log('case1');
 		}
 	};
@@ -160,6 +160,21 @@
 //			console.log(tp);
 			document.getElementById('point'+i).setAttribute('material', 'color', 'gray');
 			document.getElementById('point'+j).setAttribute('material', 'color', 'gray');
+			var sameCase = true;
+			cases.forEach(function(item, index, array) {
+				for(var i = 0; i < item.tbl.length; i++) {
+					for(var j = 0; j < item.tbl[i].length; j++) {
+						if(item.tbl[i][j] !== tbl[i][j]) {
+							sameCase = false;
+							break;
+						}
+					}
+				}
+				if(sameCase) {
+					item.action();
+				}
+				sameCase = true;
+			});
 		};
 	};
 	Point.create(sceneId, positions, mouseEnterHandler(pairTbl, twoPoints, actionCases));
