@@ -18,7 +18,7 @@
 				metalness: 0.5
 			}
 		};
-		var create = function (sceneId, positionsArr) {
+		var create = function (sceneId, positionsArr, mouseEnterHandler) {
 			_sceneEl = document.getElementById(sceneId);
 			positionsArr.forEach(function (item, index, array) {
 				var aEntity = document.createElement('a-entity');
@@ -26,6 +26,7 @@
 				aEntity.setAttribute('geometry', _template.geometry);
 				aEntity.setAttribute('material', _template.material);
 				aEntity.setAttribute('position', item);
+				aEntity.onmouseenter = mouseEnterHandler();
 				_sceneEl.appendChild(aEntity);
 			});
 		};
@@ -82,7 +83,7 @@
 					var pos = _getMidPos(positionsArr[i], positionsArr[j]);
 					var h = _getHeight(positionsArr[i], positionsArr[j]);
 					var rot = _getRotation(positionsArr[i], positionsArr[j]);
-					console.log('p1.x:'+positionsArr[i].x+', p2.x:'+positionsArr[j].x+' , rot:'+rot.z);
+					//console.log('p1.x:'+positionsArr[i].x+', p2.x:'+positionsArr[j].x+' , rot:'+rot.z);
 					
 					var aEntity = document.createElement('a-entity');
 					aEntity.setAttribute('id', _template.id);
@@ -101,6 +102,12 @@
 		};
 	})();
 	
+	var mouseEnterHandler = function() {
+		return function() {
+			console.log('a');
+		};
+	};
+	
 	var sceneId = 'scene1';
 	var positions = [
 		{x: -0.5, y: +1.0, z: -5.0},
@@ -108,6 +115,6 @@
 		{x: -2.0, y: -1.0, z: -5.0},
 		{x: +2.0, y: -1.0, z: -5.0}
 	];
-	Point.create(sceneId, positions);
+	Point.create(sceneId, positions, mouseEnterHandler);
   Line.create(sceneId, positions);
 })();
