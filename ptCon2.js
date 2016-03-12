@@ -109,9 +109,18 @@
 			}
 		}
 	};
+	var actionCases = [];
+	var case1 = {
+		tbl: [[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 0]],
+		handler: function() {
+			console.log('case1');
+		}
+	};
+	actionCases.push(case1);
+	
 	makePairTbl(positions.length);
 	
-	var mouseEnterHandler = function(tbl, tp) {
+	var mouseEnterHandler = function(tbl, tp, cases) {
 		return function() {
 			if(tp.length === 0) {
 				tp.push(this.id);
@@ -127,23 +136,25 @@
 				this.setAttribute('material', 'color', 'gray');
 				return;
 			}
-//			console.log('('+i+','+j+')');
-			if(i > j) {
-				//swap
+			if (i > j) {
 				var tmp = i;
 				i = j;
 				j = tmp;
 			}
+//			console.log('('+i+','+j+')');
+//			console.log(tbl);
 			var lineEl = document.getElementById('line'+i+j);
-			if(tbl[i][j] === 0) {
+			if(tbl[i][j] === 0 && tbl[i][j] === 0) {
 				//make line visible
 				lineEl.setAttribute('visible', 'true');
 				tbl[i][j] = 1;
+				tbl[j][i] = 1;
 			}
 			else {
 				//make line invisible
 				lineEl.setAttribute('visible', 'false');
 				tbl[i][j] = 0;
+				tbl[j][i] = 0;
 			}
 			tp.pop();
 //			console.log(tp);
@@ -151,6 +162,6 @@
 			document.getElementById('point'+j).setAttribute('material', 'color', 'gray');
 		};
 	};
-	Point.create(sceneId, positions, mouseEnterHandler(pairTbl, twoPoints));
+	Point.create(sceneId, positions, mouseEnterHandler(pairTbl, twoPoints, actionCases));
   Line.create(sceneId, positions);
 })();
