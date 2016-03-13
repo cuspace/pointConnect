@@ -116,14 +116,14 @@
 			var leds = document.querySelectorAll('.led');
 			for(var i = 0; i < leds.length; i++) {
 				var led = leds[i];
-				led.setAttribute('material', 'color', 'red');
+				led.setAttribute('material', 'color', '#f00');
 			}
 		},
 		undo: function() {
 			var leds = document.querySelectorAll('.led');
 			for(var i = 0; i < leds.length; i++) {
 				var led = leds[i];
-				led.setAttribute('material', 'color', 'white');
+				led.setAttribute('material', 'color', '#600');
 			}
 		}
 	};
