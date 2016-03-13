@@ -3,21 +3,109 @@
   <head>
     <title>Connect Points</title>
 <!--    <script src="https://aframe.io/releases/latest/aframe.min.js"></script>-->
-		<script src="./aframe.min.js"></script>
+		<script src="./aframe.js"></script>
   </head>
   <body>
     <a-scene id="scene1">
+			<a-assets>
+				<a-mixin id="light"
+								 geometry="primitive: sphere; radius: 1.5"
+								 material="color: #FFF; shader: flat"
+								 light="color: #DDDDFF; distance: 130; intensity: 2; type: point">
+				</a-mixin>
+			</a-assets>
+			<a-sky color="#f1facb">
+			</a-sky>
 			<a-camera position="0 1.8 4">
 				<a-cursor visible="true"
 									scale="1"
-									color="#4CC3D9"
+									color="#2b6e7b"
 									offset="2"
 									maxdistance="100"
 									opacity="0.5">
 				</a-cursor>
 			</a-camera>
-			<a-light position="-3 2 7"></a-light>
-			<a-sphere id="sphere1"></a-sphere>
+<!--
+			<a-light position="-3 -4 2">
+			</a-light>
+-->
+    	<a-entity position="0 -4 7">
+<!--
+				<a-animation attribute="rotation" to="0 0 360"
+											repeat="indefinite" easing="linear" dur="4096">
+				</a-animation>
+-->
+				<a-entity mixin="light" position="0 40 30"></a-entity>
+    	</a-entity>
+			
+			<a-sphere class="led" id="led1"
+								radius="0.8"
+								position="0 4.2 -5">
+				<a-animation attribute="radius"
+										 from="0.8"
+										 to="0.9"
+										 dur="500"
+										 direction="alternate"
+										 repeat="indefinite">
+				</a-animation>
+			</a-sphere>
+			<a-cylinder class="led" id="led2"
+									radius="0.8"
+									height="1.5"
+									position="0 3.5 -5">
+				<a-animation attribute="radius"
+										 from="0.8"
+										 to="0.9"
+										 dur="500"
+										 direction="alternate"
+										 repeat="indefinite">
+				</a-animation>
+			</a-cylinder>
+			<a-cylinder radius="0.1"
+									height="2"
+									position="-0.5 2 -5">
+			</a-cylinder>
+			<a-cylinder radius="0.1"
+									height="1.5"
+									position="0.5 1.5 -5">
+			</a-cylinder>
+			<a-cylinder radius="0.1"
+									height="1.5"
+									position="0.33 3 -5"
+									rotation="0 0 13">
+			</a-cylinder>
+			<a-sphere radius="0.1"
+								position="0.5 2.25 -5">
+			</a-sphere>
+			
+			<a-box position="0 -2.2 -5"
+							width="3"
+							depth="1.5"
+							height="1.5"
+							color="#cb7c50"
+							metalness="0">
+			</a-box>
+			<a-box position="0 -4.4 -5"
+							width="3"
+							depth="1.5"
+							height="3"
+							color="#100505"
+							metalness="0">
+			</a-box>
+			<a-cylinder radius="0.4"
+									position="-0.5 -1.45 -5"
+									height="0.5"
+									rotation="0 30 0"
+									segments-radial="6"
+									color="white"
+									metalness="0.5">
+			</a-cylinder>
+			<a-cylinder radius="0.35"
+									position="0.5 -1.45 -5"
+									height="0.5"
+									metalness="0.5">
+			</a-cylinder>
+			
 		</a-scene>
   </body>
 	<script src="./gl-matrix-min.js"></script>

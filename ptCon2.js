@@ -14,7 +14,7 @@
 				height: 0.5
 			},
 			material: {
-				color: 'gray',
+				color: 'white',
 				metalness: 0.5
 			}
 		};
@@ -96,8 +96,8 @@
 	var positions = [
 		{x: -0.5, y: +1.0, z: -5.0},
 		{x: +0.5, y: +1.0, z: -5.0},
-		{x: -2.0, y: -1.0, z: -5.0},
-		{x: +2.0, y: -1.0, z: -5.0}
+		{x: -0.5, y: -1.0, z: -5.0},
+		{x: +0.5, y: -1.0, z: -5.0}
 	];
 	var pairTbl = [];
 	var twoPoints = [];
@@ -111,14 +111,20 @@
 	};
 	var actionCases = [];
 	var case1 = {
-		tbl: [[0, 1, 0, 0], [1, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 0]],
+		tbl: [[0, 0, 1, 0], [0, 0, 0, 1], [1, 0, 0, 0], [0, 1, 0, 0]],
 		do: function() {
-			console.log('do');
-			document.getElementById('sphere1').setAttribute('material', 'color', 'red');
+			var leds = document.querySelectorAll('.led');
+			for(var i = 0; i < leds.length; i++) {
+				var led = leds[i];
+				led.setAttribute('material', 'color', 'red');
+			}
 		},
 		undo: function() {
-			console.log('undo');
-			document.getElementById('sphere1').setAttribute('material', 'color', 'gray');
+			var leds = document.querySelectorAll('.led');
+			for(var i = 0; i < leds.length; i++) {
+				var led = leds[i];
+				led.setAttribute('material', 'color', 'white');
+			}
 		}
 	};
 	actionCases.push(case1);
@@ -130,7 +136,7 @@
 			if(tp.length === 0) {
 				tp.push(this.id);
 //				console.log(tp);
-				this.setAttribute('material', 'color', 'red');
+				this.setAttribute('material', 'color', '#00ffeb');
 				return;
 			}
 			var i = parseInt(tp[0].substr(5));
@@ -138,7 +144,7 @@
 			if(i === j) {
 				tp.pop();
 //				console.log(tp);
-				this.setAttribute('material', 'color', 'gray');
+				this.setAttribute('material', 'color', 'white');
 				return;
 			}
 			if (i > j) {
@@ -163,8 +169,8 @@
 			}
 			tp.pop();
 //			console.log(tp);
-			document.getElementById('point'+i).setAttribute('material', 'color', 'gray');
-			document.getElementById('point'+j).setAttribute('material', 'color', 'gray');
+			document.getElementById('point'+i).setAttribute('material', 'color', 'white');
+			document.getElementById('point'+j).setAttribute('material', 'color', 'white');
 			var sameCase = true;
 			cases.forEach(function(item, index, array) {
 				for(var i = 0; i < item.tbl.length; i++) {
